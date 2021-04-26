@@ -14,7 +14,7 @@ from zarr.creation import (array, create, empty, empty_like, full, full_like,
                            zeros_like)
 from zarr.hierarchy import open_group
 from zarr.n5 import N5Store
-from zarr.storage import DirectoryStore
+from zarr.storage import DirectoryStore, SQLiteStore
 from zarr.sync import ThreadSynchronizer
 
 
@@ -269,6 +269,16 @@ def test_open_array():
     assert (100,) == a.shape
     assert (10,) == a.chunks
     assert_array_equal(np.full(100, fill_value=42), a[:])
+
+    # for SQLite store
+    store = 'data/array.sqlite3'
+    z = open_array(store, mode='w', shape=100, chunks=10)
+    z[:] = 42
+    assert isinstance(z, Array)
+    assert isinstance(z.store, SQLiteStore)
+    assert (100,) == z.shape
+    assert (10,) == z.chunks
+    assert_array_equal(np.full(100, fill_value=42), z[:])
 
 
 def test_empty_like():

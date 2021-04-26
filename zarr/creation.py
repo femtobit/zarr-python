@@ -12,7 +12,7 @@ from zarr.errors import (
 from zarr.n5 import N5Store
 from zarr.storage import (DirectoryStore, ZipStore, contains_array,
                           contains_group, default_compressor, init_array,
-                          normalize_storage_path, FSStore)
+                          normalize_storage_path, FSStore, SQLiteStore)
 from zarr.util import normalize_dimension_separator
 
 
@@ -158,6 +158,8 @@ def normalize_store_arg(store, clobber=False, storage_options=None, mode='w'):
             return ZipStore(store, mode=mode)
         elif store.endswith('.n5'):
             return N5Store(store)
+        elif store.endswith('.sqlite3') or store.endswith('.sqlite'):
+            return SQLiteStore(store)
         else:
             return DirectoryStore(store)
     else:
